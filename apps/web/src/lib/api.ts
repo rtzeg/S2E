@@ -7,8 +7,11 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const authPaths = ["/api/auth/login", "/api/auth/register"];
+  const isAuthRequest =
+    typeof config.url === "string" && authPaths.includes(config.url);
   const token = localStorage.getItem("token");
-  if (token) {
+  if (token && !isAuthRequest) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
   }

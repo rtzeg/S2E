@@ -37,6 +37,7 @@ VITE_API_URL=http://localhost:8000
 ```bash
 docker compose up --build
 ```
+В Docker фронтенд обращается к API по адресу `http://api:8000` (имя сервиса), поэтому в `docker-compose.yml` переменная `VITE_API_URL` задана именно так.
 Если фронт не стартует с ошибками о `rollup`/`node_modules`, убедитесь что контейнер использует собственные зависимости: в `docker-compose.yml` уже добавлен volume `/app/node_modules` для сервиса web.
 При повторяющихся ошибках пересоберите образ без кеша: `docker compose build --no-cache web`.
 
