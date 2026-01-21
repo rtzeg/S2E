@@ -16,14 +16,8 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-            },
-            status=status.HTTP_201_CREATED,
-        )
+        profile = UserProfileSerializer(user.profile).data
+        return Response(profile, status=status.HTTP_201_CREATED)
 
 
 class LoginView(APIView):
@@ -73,4 +67,3 @@ class VerifyMockView(APIView):
         profile.identity_level = target
         profile.save(update_fields=["identity_level"])
         return Response(UserProfileSerializer(profile).data)
-
