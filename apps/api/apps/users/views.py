@@ -6,11 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import UserProfile
-from .serializers import (
-    BotAuthSerializer,
-    RegisterSerializer,
-    UserProfileSerializer,
-)
+from .serializers import RegisterSerializer, UserProfileSerializer
 
 
 class RegisterView(APIView):
@@ -78,21 +74,3 @@ class VerifyMockView(APIView):
         profile.save(update_fields=["identity_level"])
         return Response(UserProfileSerializer(profile).data)
 
-
-class BotAuthView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request):
-        serializer = BotAuthSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        telegram_id = serializer.validated_data["telegram_id"]
-        email = f"tg_{telegram_id}@skill2earn.local"
-        user, created = User.objects.get_or_create(
-            username=email,
-            defaults={"email": email, "first_name": "Telegram User"},
-        )
-        if created:
-            user.set_unusable_password()
-            user.save(update_fields=["password"])
-        refresh = RefreshToken.for_user(user)
-        return Response({"access": str(refresh.access_token), "refresh": str(refresh)})

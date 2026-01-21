@@ -4,7 +4,6 @@
 - `POST /api/auth/register` — регистрация
 - `POST /api/auth/login` — login + JWT
 - `GET /api/auth/me` — профиль пользователя
-- `POST /api/bot/auth` — JWT для Telegram-бота
 
 ## Roadmap
 - `GET /api/roadmap` — список шагов + статус
