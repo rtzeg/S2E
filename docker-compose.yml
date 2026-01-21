@@ -17,21 +17,11 @@ services:
     build: ./apps/web
     volumes:
       - ./apps/web:/app
+      - /app/node_modules
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:8000
-    depends_on:
-      - api
-
-  bot:
-    build: ./apps/bot
-    volumes:
-      - ./apps/bot:/app
-    environment:
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - API_URL=http://api:8000/api
-      - WEB_URL=http://localhost:5173
+      - VITE_API_URL=http://api:8000
     depends_on:
       - api
 
