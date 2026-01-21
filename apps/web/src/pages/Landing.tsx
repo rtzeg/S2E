@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 
+import { SvgGallery } from "../components/SvgGallery";
+
 export const Landing = () => {
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b border-slate-200">
+    <div className="min-h-screen bg-fog">
+      <header className="border-b border-white/60 bg-white/70 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div>
             <p className="text-sm font-semibold text-slate-900">Skill2Earn</p>
@@ -69,6 +71,27 @@ export const Landing = () => {
           </Link>
         </aside>
       </main>
+
+      <section className="mx-auto w-full max-w-6xl px-6 pb-20">
+        <div className="rounded-[32px] border border-white/70 bg-white/70 p-8 shadow-[0_32px_80px_-60px_rgba(15,23,42,0.6)] backdrop-blur">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="space-y-2">
+              <p className="badge">Визуальный стиль</p>
+              <h2 className="text-2xl font-semibold text-slate-900">
+                Иллюстрации и настроение проекта
+              </h2>
+              <p className="text-sm text-slate-600">
+                Мы собираем SVG-истории в аккуратную галерею и подстраиваем акценты интерфейса
+                под их палитру.
+              </p>
+            </div>
+            <Link to="/app/roadmap" className="button-primary">
+              Смотреть все разделы
+            </Link>
+          </div>
+          <SvgGallery />
+        </div>
+      </section>
     </div>
   );
 };
