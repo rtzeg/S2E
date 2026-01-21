@@ -46,6 +46,3 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ("track", "level", "goal")
 
-
-class BotAuthSerializer(serializers.Serializer):
-    telegram_id = serializers.CharField()
