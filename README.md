@@ -37,6 +37,8 @@ VITE_API_URL=http://localhost:8000
 ```bash
 docker compose up --build
 ```
+Если фронт не стартует с ошибками о `rollup`/`node_modules`, убедитесь что контейнер использует собственные зависимости: в `docker-compose.yml` уже добавлен volume `/app/node_modules` для сервиса web.
+При повторяющихся ошибках пересоберите образ без кеша: `docker compose build --no-cache web`.
 
 ## Полезные ссылки
 - API schema: http://localhost:8000/api/docs/

@@ -17,6 +17,7 @@ services:
     build: ./apps/web
     volumes:
       - ./apps/web:/app
+      - /app/node_modules
     ports:
       - "5173:5173"
     environment:
