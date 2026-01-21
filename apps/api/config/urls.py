@@ -1,10 +1,23 @@
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+
+def root_view(_request):
+    return JsonResponse(
+        {
+            "message": "Skill2Earn API",
+            "docs": "/api/docs/",
+            "schema": "/api/schema/",
+            "api_base": "/api/",
+        }
+    )
+
+
 urlpatterns = [
-    path("", RedirectView.as_view(pattern_name="docs", permanent=False)),
+    path("", root_view, name="root"),
     path("admin/", admin.site.urls),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="docs"),
