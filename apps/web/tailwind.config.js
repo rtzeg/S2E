@@ -6,7 +6,9 @@ export default {
       colors: {
         ink: "#0f172a",
         fog: "#f8fafc",
-        accent: "#2563eb"
+        accent: "#6d28d9",
+        "accent-soft": "#ede9fe",
+        "accent-dark": "#4c1d95"
       }
     }
   },

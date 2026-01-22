@@ -1,6 +1,46 @@
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const USE_MOCK_AUTH = import.meta.env.VITE_USE_MOCK_AUTH === "true";
+const MOCK_PROFILE_KEY = "mock-profile";
+const MOCK_TOKEN = "mock-access-token";
+const MOCK_REFRESH = "mock-refresh-token";
+
+type MockProfile = {
+  name: string;
+  email: string;
+  track: string;
+  level: string;
+  goal: string;
+  identity_level: string;
+  cert_level: string;
+  badges: string[];
+};
+
+const buildMockProfile = (name: string, email: string): MockProfile => ({
+  name,
+  email,
+  track: "web",
+  level: "zero",
+  goal: "first_job",
+  identity_level: "verified",
+  cert_level: "none",
+  badges: ["Verified"],
+});
+
+const loadMockProfile = (): MockProfile | null => {
+  const raw = localStorage.getItem(MOCK_PROFILE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as MockProfile;
+  } catch {
+    return null;
+  }
+};
+
+const saveMockProfile = (profile: MockProfile) => {
+  localStorage.setItem(MOCK_PROFILE_KEY, JSON.stringify(profile));
+};
 
 export const api = axios.create({
   baseURL: API_URL
@@ -18,20 +58,34 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export type LoginResponse = {
+export type AuthResponse = {
   access: string;
   refresh: string;
+  profile?: MockProfile;
 };
 
 export const login = async (email: string, password: string) => {
-  const { data } = await api.post<LoginResponse>("/api/auth/login", { email, password });
+  if (USE_MOCK_AUTH) {
+    localStorage.setItem("token", MOCK_TOKEN);
+    localStorage.setItem("refresh", MOCK_REFRESH);
+    const existing = loadMockProfile();
+    saveMockProfile(existing ?? buildMockProfile(email.split("@")[0], email));
+    return { access: MOCK_TOKEN, refresh: MOCK_REFRESH };
+  }
+  const { data } = await api.post<AuthResponse>("/api/auth/login", { email, password });
   localStorage.setItem("token", data.access);
   localStorage.setItem("refresh", data.refresh);
   return data;
 };
 
 export const register = async (name: string, email: string, password: string) => {
-  const { data } = await api.post<LoginResponse>("/api/auth/register", { name, email, password });
+  if (USE_MOCK_AUTH) {
+    localStorage.setItem("token", MOCK_TOKEN);
+    localStorage.setItem("refresh", MOCK_REFRESH);
+    saveMockProfile(buildMockProfile(name, email));
+    return { access: MOCK_TOKEN, refresh: MOCK_REFRESH };
+  }
+  const { data } = await api.post<AuthResponse>("/api/auth/register", { name, email, password });
   localStorage.setItem("token", data.access);
   localStorage.setItem("refresh", data.refresh);
   return data;
@@ -82,11 +136,45 @@ export const fetchJobPack = async (jobId: number) => {
 };
 
 export const fetchProfile = async () => {
+  if (USE_MOCK_AUTH) {
+    const profile = loadMockProfile();
+    if (profile) {
+      return profile;
+    }
+  }
   const { data } = await api.get("/api/profile");
   return data;
 };
 
 export const verifyProfile = async (identity_level: "verified" | "eid_mock") => {
+  if (USE_MOCK_AUTH) {
+    const profile = loadMockProfile() ?? buildMockProfile("Гость", "guest@example.com");
+    const badges = new Set(profile.badges);
+    if (identity_level === "verified") {
+      badges.add("Verified");
+    }
+    if (identity_level === "eid_mock") {
+      badges.add("Verified");
+    }
+    const updated = { ...profile, identity_level, badges: Array.from(badges) };
+    saveMockProfile(updated);
+    return updated;
+  }
   const { data } = await api.post("/api/profile/verify-mock", { identity_level });
+  return data;
+};
+
+export const updateProfile = async (payload: {
+  track?: string;
+  level?: string;
+  goal?: string;
+}) => {
+  if (USE_MOCK_AUTH) {
+    const profile = loadMockProfile() ?? buildMockProfile("Гость", "guest@example.com");
+    const updated = { ...profile, ...payload };
+    saveMockProfile(updated);
+    return updated;
+  }
+  const { data } = await api.patch("/api/profile", payload);
   return data;
 };
