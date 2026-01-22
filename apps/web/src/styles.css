@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    @apply bg-fog text-ink;
+  }
+}
+
+ @layer components {
+  .card {
+    @apply rounded-2xl border border-white/70 bg-white/80 shadow-sm backdrop-blur;
+  }
+
+  .badge {
+    @apply rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent-dark;
+  }
+
+  .button {
+    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition;
+  }
+
+  .button-primary {
+    @apply button bg-accent text-white shadow-[0_12px_32px_-18px_rgba(79,70,229,0.7)] hover:bg-accent-dark;
+  }
+
+  .button-secondary {
+    @apply button border border-white/70 bg-white/70 text-slate-700 hover:bg-white/90;
+  }
+} 

@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./apps/api
+    command: >-
+      sh -c "mkdir -p data && python manage.py migrate && python manage.py seed_data && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - api-data:/app/data
+      - ./apps/api:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+
+  web:
+    build: ./apps/web
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  api-data:
