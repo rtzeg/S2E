@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Up Docker Compose
-        run: docker compose up --build -d
+        run: docker compose down && docker compose up --build -d
 
       - name: Tail logs on failure
         if: failure()
