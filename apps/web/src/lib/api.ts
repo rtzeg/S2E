@@ -43,7 +43,8 @@ const saveMockProfile = (profile: MockProfile) => {
 };
 
 export const api = axios.create({
-  baseURL: API_URL
+  baseURL: API_URL,
+  withCredentials: true
 });
 
 api.interceptors.request.use((config) => {

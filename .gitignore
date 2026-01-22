@@ -10,3 +10,7 @@ dist/
 .venv/
 .DS_Store
 apps/api/data/
+<<<<<<< HEAD
+
+=======
+>>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680

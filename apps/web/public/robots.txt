@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 User-agent: *
 Allow: /
 
@@ -18,3 +19,25 @@ Disallow: /*.map$
 Disallow: /admin/
 
 Sitemap: https://365psy.app/sitemap.xml
+=======
+User-agent: *
+Allow: /
+
+# Приватные/служебные разделы
+Disallow: /client/
+Disallow: /favorites
+Disallow: /auth/
+Disallow: /api/
+
+# Не индексировать техническое и мусорные URL
+Disallow: /*?*
+Disallow: /404
+Disallow: /assets/
+Disallow: /src/
+Disallow: /*.map$
+
+# (Если вдруг будут админки)
+Disallow: /admin/
+
+Sitemap: https://365psy.app/sitemap.xml
+>>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
