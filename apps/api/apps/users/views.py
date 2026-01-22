@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -17,6 +17,7 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        login(request, user)
         profile = UserProfileSerializer(user.profile).data
         refresh = RefreshToken.for_user(user)
         return Response(
@@ -39,8 +40,8 @@ class LoginView(APIView):
                 {"detail": "Неверный email или пароль"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        refresh = RefreshToken.for_user(user)
-        return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
+        login(request, user)
+        return Response(UserProfileSerializer(user.profile).data)
 
 
 class MeView(APIView):
