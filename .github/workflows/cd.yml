@@ -1,0 +1,22 @@
+name: Push to server
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [main]
+
+jobs:
+  production:
+    name: Deploy to self-hosted
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Up Docker Compose
+        run: docker compose up --build -d
+
+      - name: Tail logs on failure
+        if: failure()
+        run: docker compose logs --no-color | tail -n 200 | cat

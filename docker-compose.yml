@@ -1,5 +1,7 @@
 version: "3.9"
 
+name: s2e-raim
+
 services:
   api:
     build: ./apps/api
@@ -9,7 +11,7 @@ services:
       - api-data:/app/data
       - ./apps/api:/app
     ports:
-      - "8000:8000"
+      - "25430:8000"
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
 
@@ -19,7 +21,7 @@ services:
       - ./apps/web:/app
       - /app/node_modules
     ports:
-      - "5173:5173"
+      - "57039:5173"
     environment:
       - VITE_API_URL=http://api:8000
     depends_on:
