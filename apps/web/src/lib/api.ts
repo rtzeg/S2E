@@ -3,37 +3,27 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export const api = axios.create({
-  baseURL: API_URL
+  baseURL: API_URL,
+  withCredentials: true
 });
 
-api.interceptors.request.use((config) => {
-  const authPaths = ["/api/auth/login", "/api/auth/register"];
-  const isAuthRequest =
-    typeof config.url === "string" && authPaths.includes(config.url);
-  const token = localStorage.getItem("token");
-  if (token && !isAuthRequest) {
-    config.headers = config.headers ?? {};
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export type LoginResponse = {
-  access: string;
-  refresh: string;
+export type ProfileResponse = {
+  id: number;
+  name: string;
+  track: string;
+  goal: string;
+  identity_level: string;
+  cert_level: string;
+  badges?: string[];
 };
 
 export const login = async (email: string, password: string) => {
-  const { data } = await api.post<LoginResponse>("/api/auth/login", { email, password });
-  localStorage.setItem("token", data.access);
-  localStorage.setItem("refresh", data.refresh);
+  const { data } = await api.post<ProfileResponse>("/api/auth/login", { email, password });
   return data;
 };
 
 export const register = async (name: string, email: string, password: string) => {
-  const { data } = await api.post<LoginResponse>("/api/auth/register", { name, email, password });
-  localStorage.setItem("token", data.access);
-  localStorage.setItem("refresh", data.refresh);
+  const { data } = await api.post<ProfileResponse>("/api/auth/register", { name, email, password });
   return data;
 };
 
