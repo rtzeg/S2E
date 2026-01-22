@@ -5,6 +5,11 @@ from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
+admin.site.site_header = "Администрирование Skill2Earn"
+admin.site.site_title = "Skill2Earn Admin"
+admin.site.index_title = "Администрирование проектов и контента"
+
+
 def root_view(_request):
     return JsonResponse(
         {
