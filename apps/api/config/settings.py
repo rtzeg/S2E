@@ -1,4 +1,3 @@
-from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +21,6 @@ INSTALLED_APPS = [
     # Third-party
     "corsheaders",
     "rest_framework",
-    "rest_framework_simplejwt",
     "drf_spectacular",
 
     # Local apps
@@ -88,12 +86,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     # ✅ MVP: открываем всё, чтобы фронт грузил роадмапы без токенов
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "config.authentication.CsrfExemptSessionAuthentication",
+    ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=6),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 
 CORS_ALLOWED_ORIGINS = [
