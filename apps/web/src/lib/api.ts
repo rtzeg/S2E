@@ -90,3 +90,12 @@ export const verifyProfile = async (identity_level: "verified" | "eid_mock") => 
   const { data } = await api.post("/api/profile/verify-mock", { identity_level });
   return data;
 };
+
+export const updateProfile = async (payload: {
+  track?: string;
+  level?: string;
+  goal?: string;
+}) => {
+  const { data } = await api.patch("/api/profile", payload);
+  return data;
+};

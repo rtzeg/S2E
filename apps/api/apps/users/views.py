@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import UserProfile
-from .serializers import RegisterSerializer, UserProfileSerializer
+from .serializers import ProfileUpdateSerializer, RegisterSerializer, UserProfileSerializer
 
 
 class RegisterView(APIView):
@@ -37,12 +37,16 @@ class LoginView(APIView):
 
 
 class MeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         profile = request.user.profile
         return Response(UserProfileSerializer(profile).data)
 
 
 class ProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         profile = request.user.profile
         badges = []
@@ -54,8 +58,17 @@ class ProfileView(APIView):
         data["badges"] = badges
         return Response(data)
 
+    def patch(self, request):
+        profile = request.user.profile
+        serializer = ProfileUpdateSerializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(UserProfileSerializer(profile).data)
+
 
 class VerifyMockView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
         profile = request.user.profile
         target = request.data.get("identity_level", "verified")
