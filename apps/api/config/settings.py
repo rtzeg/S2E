@@ -1,10 +1,16 @@
+from datetime import timedelta
+import importlib.util
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+DB_DIR = BASE_DIR / "data"
+DB_DIR.mkdir(parents=True, exist_ok=True)
 
 SECRET_KEY = "dev-secret-key"
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
+AUTO_SEED_DATA = os.getenv("AUTO_SEED_DATA", "true").lower() == "true"
 
 # чтобы sqlite не падал, если папки data нет
 DATA_DIR = BASE_DIR / "data"
@@ -27,6 +33,9 @@ INSTALLED_APPS = [
     "apps.users.apps.UsersConfig",
     "apps.core.apps.CoreConfig",
 ]
+
+if importlib.util.find_spec("rest_framework_simplejwt") is not None:
+    INSTALLED_APPS.append("rest_framework_simplejwt")
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -63,7 +72,7 @@ ASGI_APPLICATION = "config.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": DATA_DIR / "db.sqlite3",
+        "NAME": DB_DIR / "db.sqlite3",
     }
 }
 

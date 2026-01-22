@@ -1,64 +1,116 @@
 from django.core.management.base import BaseCommand
 
-from apps.core.models import Job, JobPack, RoadmapStep
+from apps.core.models import (
+    AIResult,
+    Job,
+    JobPack,
+    RoadmapStep,
+    Submission,
+    TakenJob,
+    UserRoadmapProgress,
+)
 
 
 class Command(BaseCommand):
     help = "Seed roadmap steps and starter jobs"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--force",
+            action="store_true",
+            help="Clear existing seed data before inserting fresh rows",
+        )
+
     def handle(self, *args, **options):
         if RoadmapStep.objects.exists() or Job.objects.exists():
-            self.stdout.write(self.style.WARNING("Seed data already exists"))
-            return
+            if not options["force"]:
+                self.stdout.write(self.style.WARNING("Seed data already exists"))
+                self.stdout.write(self.style.WARNING("Run with --force to reseed"))
+                return
+            AIResult.objects.all().delete()
+            Submission.objects.all().delete()
+            TakenJob.objects.all().delete()
+            UserRoadmapProgress.objects.all().delete()
+            JobPack.objects.all().delete()
+            Job.objects.all().delete()
+            RoadmapStep.objects.all().delete()
 
         steps = [
             {
-                "title": "Бриф и цели клиента",
-                "description": "Собери цели бизнеса и критерии успеха.",
-                "est_time_minutes": 60,
-                "skill_tags": ["discovery", "communication"],
+                "title": "Старт и позиционирование",
+                "description": (
+                    "Урок: выбери нишу и четкий оффер.\n"
+                    "Практика: опиши 3 результата, которые ты даешь.\n"
+                    "Чек-лист: кому помогаю → чем → за какой срок."
+                ),
+                "est_time_minutes": 45,
+                "skill_tags": ["positioning", "offer"],
                 "order": 1,
             },
             {
-                "title": "Структура лендинга",
-                "description": "Собери структуру и блоки на основе брифа.",
+                "title": "Портфолио и кейсы",
+                "description": (
+                    "Урок: структура сильного кейса.\n"
+                    "Практика: оформи 1 кейс (задача → процесс → результат).\n"
+                    "Материалы: шаблон кейса + список метрик."
+                ),
                 "est_time_minutes": 90,
-                "skill_tags": ["ux", "content"],
+                "skill_tags": ["portfolio", "storytelling"],
                 "order": 2,
             },
             {
-                "title": "Оффер и сроки",
-                "description": "Сформулируй оффер, сроки и этапы работы.",
-                "est_time_minutes": 45,
-                "skill_tags": ["sales", "planning"],
+                "title": "Поиск первых заказов",
+                "description": (
+                    "Урок: где искать и как писать первым.\n"
+                    "Практика: сделай 5 откликов по шаблону.\n"
+                    "Шаблон: короткий питч + вопрос клиенту."
+                ),
+                "est_time_minutes": 60,
+                "skill_tags": ["outreach", "sales"],
                 "order": 3,
             },
             {
-                "title": "Дизайн-концепт",
-                "description": "Подготовь визуальные референсы и стиль.",
-                "est_time_minutes": 120,
-                "skill_tags": ["design"],
+                "title": "Созвон и бриф",
+                "description": (
+                    "Урок: вопросы для брифа.\n"
+                    "Практика: собери бриф из 10 вопросов.\n"
+                    "Результат: документ с целями, аудиторией, критериями."
+                ),
+                "est_time_minutes": 75,
+                "skill_tags": ["discovery", "communication"],
                 "order": 4,
             },
             {
-                "title": "Сборка макета",
-                "description": "Собери первую версию макета и чек-лист.",
-                "est_time_minutes": 180,
-                "skill_tags": ["html", "css"],
+                "title": "Оценка и оффер",
+                "description": (
+                    "Урок: как считать сроки и цену.\n"
+                    "Практика: составь 2 пакета (basic/pro).\n"
+                    "Результат: оффер с этапами и дедлайном."
+                ),
+                "est_time_minutes": 60,
+                "skill_tags": ["pricing", "planning"],
                 "order": 5,
             },
             {
-                "title": "Коммуникация",
-                "description": "Отработай сценарии переговоров и фиксацию ТЗ.",
-                "est_time_minutes": 60,
-                "skill_tags": ["negotiation"],
+                "title": "Выполнение и сдача",
+                "description": (
+                    "Урок: структура выполнения и промежуточные отчеты.\n"
+                    "Практика: составь план из 3 этапов.\n"
+                    "Результат: отчет + финальный файл."
+                ),
+                "est_time_minutes": 120,
+                "skill_tags": ["delivery", "communication"],
                 "order": 6,
             },
             {
-                "title": "Первый заказ",
-                "description": "Возьми starter job и доведи до сдачи.",
-                "est_time_minutes": 240,
-                "skill_tags": ["delivery"],
+                "title": "После проекта",
+                "description": (
+                    "Урок: как попросить отзыв и апсейл.\n"
+                    "Практика: подготовь сообщение с отзывом.\n"
+                    "Результат: отзыв + кейс в портфолио."
+                ),
+                "est_time_minutes": 45,
+                "skill_tags": ["retention", "growth"],
                 "order": 7,
             },
         ]
@@ -145,6 +197,38 @@ class Command(BaseCommand):
                 "difficulty": "easy",
                 "description": "3 email-шаблона для рассылки.",
             },
+            {
+                "title": "Прототип мобильного экрана",
+                "budget": "6 000 ₽",
+                "duration": "3 дня",
+                "stack": ["Figma"],
+                "difficulty": "easy",
+                "description": "Прототип одного экрана и UI-гайд.",
+            },
+            {
+                "title": "Лендинг для вебинара",
+                "budget": "7 500 ₽",
+                "duration": "4 дня",
+                "stack": ["Tilda", "Design"],
+                "difficulty": "easy",
+                "description": "Страница с формой регистрации и блоками спикера.",
+            },
+            {
+                "title": "Настройка Notion-CRM",
+                "budget": "8 000 ₽",
+                "duration": "3 дня",
+                "stack": ["Notion"],
+                "difficulty": "medium",
+                "description": "Простая CRM с этапами и шаблонами задач.",
+            },
+            {
+                "title": "Логотип и мини-гайд",
+                "budget": "9 500 ₽",
+                "duration": "5 дней",
+                "stack": ["Figma", "Illustrator"],
+                "difficulty": "medium",
+                "description": "Логотип + 3 варианта использования.",
+            },
         ]
 
         created_jobs = Job.objects.bulk_create([Job(**job) for job in jobs])
@@ -153,13 +237,19 @@ class Command(BaseCommand):
             JobPack.objects.create(
                 job=job,
                 questions_to_client=[
-                    "Цель задачи",
-                    "Кто принимает решение",
-                    "Какие материалы уже есть",
+                    "Какой результат хотите получить?",
+                    "Кто принимает финальное решение?",
+                    "Какие материалы уже есть?",
+                    "Есть ли примеры, которые нравятся?",
                 ],
-                scope_template="Объем работ: ...\nЭтапы: ...\nСроки: ...",
-                contract_template="Договор оказания услуг (шаблон)",
-                invoice_template="Инвойс (шаблон)",
+                scope_template=(
+                    "Объем работ: ...\n"
+                    "Этапы: ...\n"
+                    "Сроки: ...\n"
+                    "Что входит/не входит: ..."
+                ),
+                contract_template="Договор оказания услуг (шаблон v1)",
+                invoice_template="Инвойс (шаблон v1)",
             )
 
         self.stdout.write(self.style.SUCCESS("Seed data created"))

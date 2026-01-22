@@ -12,18 +12,26 @@ class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        from rest_framework_simplejwt.tokens import RefreshToken
+
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         login(request, user)
         profile = UserProfileSerializer(user.profile).data
-        return Response(profile, status=status.HTTP_201_CREATED)
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {"access": str(refresh.access_token), "refresh": str(refresh), "profile": profile},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        from rest_framework_simplejwt.tokens import RefreshToken
+
         email = request.data.get("email")
         password = request.data.get("password")
         user = authenticate(username=email, password=password)
