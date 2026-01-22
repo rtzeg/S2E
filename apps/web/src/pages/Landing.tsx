@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import { SvgGallery } from "../components/SvgGallery";
 
 type DecorSvgProps = {
@@ -16,7 +15,6 @@ const DecorSvg = ({ src, className }: DecorSvgProps) => {
       loading="lazy"
       decoding="async"
       onError={(e) => {
-        // если файла нет — прячем, чтобы не было “битых” картинок
         (e.currentTarget as HTMLImageElement).style.display = "none";
       }}
       className={[
@@ -36,7 +34,6 @@ export const Landing = () => {
 
   const logo = asset("logo.png");
 
-  // ⚠️ ВПИШИ СВОИ РЕАЛЬНЫЕ ИМЕНА SVG ИЗ public/svgs
   const deco = {
     heroBlob: svg("startup.svg"),
     heroRings: svg("asking-question.svg"),
@@ -50,14 +47,14 @@ export const Landing = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-fog">
-      {/* Мягкая фонова подсветка (без картинок) */}
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-fog via-white to-accent-soft/40">
+      {/* мягкая подсветка фона */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_500px_at_20%_0%,rgba(109,40,217,0.10),transparent_65%),radial-gradient(700px_420px_at_90%_20%,rgba(56,189,248,0.12),transparent_60%),radial-gradient(900px_500px_at_50%_100%,rgba(16,185,129,0.10),transparent_60%)]"
       />
 
-      {/* Глобальные декоративные SVG */}
+      {/* декоративные SVG по краям */}
       <DecorSvg
         src={deco.heroBlob}
         className="-top-44 -right-44 hidden w-[740px] rotate-6 md:block opacity-15"
@@ -68,7 +65,7 @@ export const Landing = () => {
       />
       <DecorSvg
         src={deco.wave}
-        className="-bottom-40 -left-20 hidden w-[760px] md:block opacity-10"
+        className="-bottom-44 -left-16 hidden w-[760px] md:block opacity-10"
       />
 
       <header className="sticky top-0 z-20 border-b border-white/60 bg-white/70 backdrop-blur">
@@ -77,22 +74,9 @@ export const Landing = () => {
           <Link to="/" className="flex items-center gap-3">
             <span className="sr-only">Skill2Earn</span>
             <img src={logo} alt="Skill2Earn" className="h-9 w-auto object-contain" />
+            <span className="hidden text-xs text-slate-500 md:block">Freelance Launchpad</span>
           </Link>
 
-=======
-
-import { SvgGallery } from "../components/SvgGallery";
-
-export const Landing = () => {
-  return (
-    <div className="min-h-screen bg-fog">
-      <header className="border-b border-white/60 bg-white/70 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div>
-            <p className="text-sm font-semibold text-slate-900">Skill2Earn</p>
-            <p className="text-xs text-slate-500">Freelance Launchpad</p>
-          </div>
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
           <div className="flex items-center gap-3">
             <Link to="/onboarding" className="button-secondary">
               Войти / Регистрация
@@ -104,8 +88,11 @@ export const Landing = () => {
         </div>
       </header>
 
-<<<<<<< HEAD
       <main className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr]">
+        {/* лёгкие пятна для глубины */}
+        <div className="pointer-events-none absolute -left-24 top-6 hidden h-56 w-56 rounded-full bg-accent/15 blur-3xl lg:block" />
+        <div className="pointer-events-none absolute -right-16 bottom-12 hidden h-64 w-64 rounded-full bg-indigo-200/50 blur-3xl lg:block" />
+
         <section className="relative space-y-6">
           <p className="badge inline-flex">Skill2Earn • MVP</p>
 
@@ -119,19 +106,6 @@ export const Landing = () => {
           </p>
 
           <div className="flex flex-wrap gap-3">
-=======
-      <main className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="space-y-6">
-          <p className="badge">Skill2Earn • MVP</p>
-          <h1 className="text-4xl font-semibold text-slate-900">
-            Доводим новичка до первого заработка на фрилансе
-          </h1>
-          <p className="text-lg text-slate-600">
-            Интерактивный roadmap, тренажеры, AI-проверка и переговорный коуч, чтобы быстрее
-            получить первый оплачиваемый проект.
-          </p>
-          <div className="flex gap-3">
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
             <Link to="/onboarding" className="button-primary">
               Запустить маршрут
             </Link>
@@ -139,47 +113,37 @@ export const Landing = () => {
               Посмотреть roadmap
             </Link>
           </div>
-<<<<<<< HEAD
 
           <div className="grid gap-4 md:grid-cols-3">
             <div className="card relative overflow-hidden p-4">
               <DecorSvg src={deco.cardRocket} className="-right-10 -top-10 w-32 opacity-15" />
               <p className="text-sm text-slate-500">7–14 дней</p>
               <p className="text-lg font-semibold text-slate-900">до первого заказа</p>
-              <p className="mt-1 text-sm text-slate-600">Понятный маршрут без “угадай что делать”.</p>
+              <p className="mt-1 text-sm text-slate-600">
+                Понятный маршрут без “угадай что делать”.
+              </p>
             </div>
 
             <div className="card relative overflow-hidden p-4">
               <DecorSvg src={deco.cardChat} className="-right-10 -top-10 w-32 opacity-15" />
               <p className="text-sm text-slate-500">AI Coach</p>
               <p className="text-lg font-semibold text-slate-900">переговорные сценарии</p>
-              <p className="mt-1 text-sm text-slate-600">Готовые ответы, чтобы не теряться.</p>
+              <p className="mt-1 text-sm text-slate-600">
+                Готовые ответы, чтобы не теряться.
+              </p>
             </div>
 
             <div className="card relative overflow-hidden p-4">
               <DecorSvg src={deco.cardBag} className="-right-10 -top-10 w-32 opacity-15" />
               <p className="text-sm text-slate-500">Starter Jobs</p>
               <p className="text-lg font-semibold text-slate-900">первые безопасные задачи</p>
-              <p className="mt-1 text-sm text-slate-600">Пакеты: вопросы, scope, договор, инвойс.</p>
-=======
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="card p-4">
-              <p className="text-sm text-slate-500">7-14 дней</p>
-              <p className="text-lg font-semibold">до первого заказа</p>
-            </div>
-            <div className="card p-4">
-              <p className="text-sm text-slate-500">AI Coach</p>
-              <p className="text-lg font-semibold">переговорные сценарии</p>
-            </div>
-            <div className="card p-4">
-              <p className="text-sm text-slate-500">Starter Jobs</p>
-              <p className="text-lg font-semibold">первые безопасные задачи</p>
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
+              <p className="mt-1 text-sm text-slate-600">
+                Пакеты: вопросы, scope, договор, инвойс.
+              </p>
             </div>
           </div>
         </section>
 
-<<<<<<< HEAD
         <aside className="card relative overflow-hidden space-y-4 p-6">
           <DecorSvg src={deco.asideIcon} className="-right-10 -top-10 w-40 opacity-15" />
 
@@ -190,19 +154,11 @@ export const Landing = () => {
             </p>
           </div>
 
-=======
-        <aside className="card space-y-4 p-6">
-          <h2 className="text-lg font-semibold">Сценарий дня</h2>
-          <p className="text-sm text-slate-600">
-            Клиент просит "подешевле". Как сохранить ценность и зафиксировать объем работ?
-          </p>
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
           <div className="flex flex-wrap gap-2">
             <span className="badge">Торг</span>
             <span className="badge">Фиксация ТЗ</span>
             <span className="badge">Сроки</span>
           </div>
-<<<<<<< HEAD
 
           <Link to="/app/coach" className="button-secondary w-fit">
             Открыть AI Coach
@@ -216,7 +172,7 @@ export const Landing = () => {
       </main>
 
       <section className="relative mx-auto w-full max-w-6xl px-6 pb-20">
-        <div className="rounded-[32px] border border-white/70 bg-white/70 p-8 shadow-[0_32px_80px_-60px_rgba(15,23,42,0.6)] backdrop-blur">
+        <div className="rounded-[32px] border border-white/70 bg-white/70 p-8 shadow-[0_40px_90px_-70px_rgba(15,23,42,0.6)] backdrop-blur">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-2">
               <p className="badge inline-flex">Визуальный стиль</p>
@@ -224,39 +180,16 @@ export const Landing = () => {
                 Иллюстрации и настроение проекта
               </h2>
               <p className="max-w-2xl text-sm text-slate-600">
-=======
-          <Link to="/app/coach" className="button-secondary">
-            Открыть AI Coach
-          </Link>
-        </aside>
-      </main>
-
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20">
-        <div className="rounded-[32px] border border-white/70 bg-white/70 p-8 shadow-[0_32px_80px_-60px_rgba(15,23,42,0.6)] backdrop-blur">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="space-y-2">
-              <p className="badge">Визуальный стиль</p>
-              <h2 className="text-2xl font-semibold text-slate-900">
-                Иллюстрации и настроение проекта
-              </h2>
-              <p className="text-sm text-slate-600">
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
                 Мы собираем SVG-истории в аккуратную галерею и подстраиваем акценты интерфейса
                 под их палитру.
               </p>
             </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
             <Link to="/app/roadmap" className="button-primary">
               Смотреть все разделы
             </Link>
           </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> fd36de3d22e88d6ccb3ee29bab4ce739d5cb8680
           <SvgGallery />
         </div>
       </section>

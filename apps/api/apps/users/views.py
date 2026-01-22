@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import UserProfile
-from .serializers import RegisterSerializer, UserProfileSerializer
+from .serializers import ProfileUpdateSerializer, RegisterSerializer, UserProfileSerializer
 
 
 class RegisterView(APIView):
@@ -57,6 +57,13 @@ class ProfileView(APIView):
         data = UserProfileSerializer(profile).data
         data["badges"] = badges
         return Response(data)
+
+    def patch(self, request):
+        profile = request.user.profile
+        serializer = ProfileUpdateSerializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(UserProfileSerializer(profile).data)
 
 
 class VerifyMockView(APIView):

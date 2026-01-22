@@ -3,29 +3,41 @@ type SvgTile = {
   alt: string;
   containerClass: string;
   frameClass: string;
+  imageClass: string;
 };
 
-const tileStyles = [
+const heroLayouts = [
+  {
+    containerClass: "lg:col-span-7 lg:row-span-4",
+    imageClass: "max-h-[360px]",
+  },
+  {
+    containerClass: "lg:col-span-5 lg:row-span-2",
+    imageClass: "max-h-[220px]",
+  },
+  {
+    containerClass: "lg:col-span-5 lg:row-span-2",
+    imageClass: "max-h-[220px]",
+  },
   {
     containerClass: "lg:col-span-4 lg:row-span-2",
-    frameClass:
-      "from-accent-soft via-white to-sky-100 border-white/80 shadow-[0_24px_60px_-36px_rgba(92,45,158,0.5)]",
+    imageClass: "max-h-[200px]",
   },
   {
-    containerClass: "lg:col-span-2 lg:row-span-2",
-    frameClass:
-      "from-amber-50 via-white to-rose-100 border-white/70 shadow-[0_24px_60px_-36px_rgba(217,119,6,0.45)]",
+    containerClass: "lg:col-span-4 lg:row-span-2",
+    imageClass: "max-h-[200px]",
   },
   {
-    containerClass: "lg:col-span-3 lg:row-span-2",
-    frameClass:
-      "from-emerald-50 via-white to-teal-100 border-white/80 shadow-[0_24px_60px_-36px_rgba(16,185,129,0.45)]",
+    containerClass: "lg:col-span-4 lg:row-span-2",
+    imageClass: "max-h-[200px]",
   },
-  {
-    containerClass: "lg:col-span-3 lg:row-span-2",
-    frameClass:
-      "from-indigo-50 via-white to-purple-100 border-white/80 shadow-[0_24px_60px_-36px_rgba(79,70,229,0.45)]",
-  },
+];
+
+const frameStyles = [
+  "from-accent-soft via-white to-sky-100 border-white/80 shadow-[0_30px_70px_-40px_rgba(92,45,158,0.45)]",
+  "from-amber-50 via-white to-rose-100 border-white/70 shadow-[0_30px_70px_-40px_rgba(217,119,6,0.4)]",
+  "from-emerald-50 via-white to-teal-100 border-white/80 shadow-[0_30px_70px_-40px_rgba(16,185,129,0.4)]",
+  "from-indigo-50 via-white to-purple-100 border-white/80 shadow-[0_30px_70px_-40px_rgba(79,70,229,0.4)]",
 ];
 
 const svgModules = import.meta.glob("../assets/svgs/*.svg", {
@@ -37,13 +49,18 @@ const svgModules = import.meta.glob("../assets/svgs/*.svg", {
 const svgUrls = Object.values(svgModules) as string[];
 
 const tiles: SvgTile[] = svgUrls.map((url, index) => {
-  const style = tileStyles[index % tileStyles.length];
+  const layout = heroLayouts[index] ?? {
+    containerClass: "lg:col-span-4 lg:row-span-2",
+    imageClass: "max-h-[200px]",
+  };
+  const frameClass = frameStyles[index % frameStyles.length];
 
   return {
     url,
     alt: `Иллюстрация ${index + 1}`,
-    containerClass: style.containerClass,
-    frameClass: style.frameClass,
+    containerClass: layout.containerClass,
+    frameClass,
+    imageClass: layout.imageClass,
   };
 });
 
@@ -58,7 +75,7 @@ export const SvgGallery = () => {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:auto-rows-[160px] lg:grid-cols-6">
+    <div className="grid gap-4 sm:grid-cols-2 lg:auto-rows-[120px] lg:grid-cols-12">
       {tiles.map((tile) => (
         <figure key={tile.url} className={`group ${tile.containerClass}`}>
           <div
@@ -71,7 +88,7 @@ export const SvgGallery = () => {
             <img
               src={tile.url}
               alt={tile.alt}
-              className="relative z-10 h-full max-h-[200px] w-full object-contain drop-shadow-[0_12px_24px_rgba(15,23,42,0.12)]"
+              className={`relative z-10 h-full w-full object-contain drop-shadow-[0_16px_30px_rgba(15,23,42,0.14)] ${tile.imageClass}`}
             />
           </div>
         </figure>

@@ -1,7 +1,7 @@
 from random import randint
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,9 +16,13 @@ from .serializers import (
 
 
 class RoadmapListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
-        progress = UserRoadmapProgress.objects.filter(user=request.user)
-        progress_map = {item.step_id: item.status for item in progress}
+        progress_map = {}
+        if request.user.is_authenticated:
+            progress = UserRoadmapProgress.objects.filter(user=request.user)
+            progress_map = {item.step_id: item.status for item in progress}
         steps = RoadmapStep.objects.all()
         serializer = RoadmapStepSerializer(steps, many=True, context={"progress_map": progress_map})
         return Response(serializer.data)
