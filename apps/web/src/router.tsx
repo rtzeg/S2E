@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { AppShell } from "./components/AppShell";
 import { Landing } from "./pages/Landing";
 import { Onboarding } from "./pages/Onboarding";
+import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { Roadmap } from "./pages/Roadmap";
 import { RoadmapStep } from "./pages/RoadmapStep";
@@ -11,11 +12,13 @@ import { Coach } from "./pages/Coach";
 import { Jobs } from "./pages/Jobs";
 import { JobDetail } from "./pages/JobDetail";
 import { Profile } from "./pages/Profile";
+import { NotFound } from "./pages/NotFound";
 
 const withShell = (element: React.ReactNode) => <AppShell>{element}</AppShell>;
 
 export const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
+  { path: "/login", element: <Login /> },
   { path: "/onboarding", element: <Onboarding /> },
   { path: "/app", element: withShell(<Dashboard />) },
   { path: "/app/roadmap", element: withShell(<Roadmap />) },
@@ -25,5 +28,6 @@ export const router = createBrowserRouter([
   { path: "/app/coach", element: withShell(<Coach />) },
   { path: "/app/jobs", element: withShell(<Jobs />) },
   { path: "/app/jobs/:jobId", element: withShell(<JobDetail />) },
-  { path: "/app/profile", element: withShell(<Profile />) }
+  { path: "/app/profile", element: withShell(<Profile />) },
+  { path: "*", element: <NotFound /> }
 ]);

@@ -3,6 +3,7 @@
 ## Auth
 - `POST /api/auth/register` — регистрация
 - `POST /api/auth/login` — login + JWT
+- `POST /api/auth/logout` — logout
 - `GET /api/auth/me` — профиль пользователя
 
 ## Roadmap

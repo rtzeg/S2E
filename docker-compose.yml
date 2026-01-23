@@ -23,6 +23,7 @@ services:
     ports:
       - "57039:5173"
     environment:
+      # - VITE_API_URL=http://localhost:25430
       - VITE_API_URL=http://api:8000
     depends_on:
       - api

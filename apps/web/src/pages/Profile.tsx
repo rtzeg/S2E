@@ -22,6 +22,7 @@ export const Profile = () => {
     }
   });
   const [formState, setFormState] = useState({
+    name: "",
     track: "",
     level: "",
     goal: ""
@@ -30,6 +31,7 @@ export const Profile = () => {
   useEffect(() => {
     if (data) {
       setFormState({
+        name: data.name ?? "",
         track: data.track ?? "",
         level: data.level ?? "",
         goal: data.goal ?? ""
@@ -48,7 +50,7 @@ export const Profile = () => {
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <p className="text-sm text-slate-500">Имя</p>
-            <p className="text-lg font-semibold">{data?.name}</p>
+            <p className="text-lg font-semibold">{data?.name || 'anonymous'}</p>
           </div>
           <div>
             <p className="text-sm text-slate-500">Трек</p>
@@ -88,7 +90,18 @@ export const Profile = () => {
         <p className="mt-2 text-sm text-slate-600">
           Выберите трек, текущий уровень и цель — это влияет на рекомендации roadmap.
         </p>
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
+        <div className="mt-4 grid gap-4 md:grid-cols-4">
+          <label className="space-y-2 text-sm text-slate-600">
+            <span>Имя</span>
+            <input
+              className="w-full rounded-2xl border border-white/70 bg-white/80 px-4 py-2 text-sm text-slate-900 shadow-sm"
+              type="text"
+              value={formState.name}
+              onChange={(event) => setFormState({ ...formState, name: event.target.value })}
+              required
+              minLength={2}
+            />
+          </label>
           <label className="space-y-2 text-sm text-slate-600">
             <span>Трек</span>
             <select
@@ -138,6 +151,7 @@ export const Profile = () => {
             className="button-secondary"
             onClick={() =>
               setFormState({
+                name: data?.name ?? "",
                 track: data?.track ?? "",
                 level: data?.level ?? "",
                 goal: data?.goal ?? ""

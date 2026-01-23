@@ -18,7 +18,7 @@ export const Dashboard = () => {
           </div>
         ) : (
           <p className="mt-2 text-sm text-slate-500">
-            {profileQuery.data?.name}, твой трек: {profileQuery.data?.track}. Цель —
+            {profileQuery.data?.name || 'anonymous'}, твой трек: {profileQuery.data?.track}. Цель —
             {" "}
             {profileQuery.data?.goal}.
           </p>

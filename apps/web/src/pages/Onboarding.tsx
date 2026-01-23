@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../lib/api";
+import { register, login } from "../lib/api";
 import { useToast } from "../lib/toast";
+import { useAuth } from "../lib/auth-context";
 
 export const Onboarding = () => {
   const navigate = useNavigate();
   const { push } = useToast();
+  const { login } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
@@ -18,10 +20,12 @@ export const Onboarding = () => {
     setLoading(true);
     try {
       await register(form.name, form.email, form.password);
+      login();
       push("Профиль создан, добро пожаловать!");
       navigate("/app");
-    } catch (error) {
-      push("Не удалось зарегистрироваться");
+    } catch (error: any) {
+      const message = error.response?.data?.email?.[0] || "Не удалось зарегистрироваться";
+      push(message);
     } finally {
       setLoading(false);
     }

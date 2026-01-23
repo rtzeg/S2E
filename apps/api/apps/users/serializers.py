@@ -12,6 +12,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ("email", "password", "name")
         extra_kwargs = {"password": {"write_only": True}}
 
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Такой пользователь уже существует")
+        return value
+
     def create(self, validated_data):
         name = validated_data.pop("name")
         email = validated_data.get("email")
@@ -42,7 +47,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="user.first_name", required=False)
+
     class Meta:
         model = UserProfile
-        fields = ("track", "level", "goal")
+        fields = ("track", "level", "goal", "name")
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+        if 'first_name' in user_data:
+            instance.user.first_name = user_data['first_name']
+            instance.user.save(update_fields=['first_name'])
+        return super().update(instance, validated_data)
 

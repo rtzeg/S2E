@@ -52,9 +52,11 @@ api.interceptors.request.use((config) => {
   const isAuthRequest =
     typeof config.url === "string" && authPaths.includes(config.url);
   const token = localStorage.getItem("token");
+  console.log(`DEBUG: Request to ${config.url}, token present: ${!!token}, isAuthRequest: ${isAuthRequest}`);
   if (token && !isAuthRequest) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
+    console.log(`DEBUG: Added Authorization header: Bearer ${token.substring(0, 20)}...`);
   }
   return config;
 });
@@ -70,7 +72,8 @@ export const login = async (email: string, password: string) => {
     localStorage.setItem("token", MOCK_TOKEN);
     localStorage.setItem("refresh", MOCK_REFRESH);
     const existing = loadMockProfile();
-    saveMockProfile(existing ?? buildMockProfile(email.split("@")[0], email));
+    const profile = existing ?? buildMockProfile("", email);
+    saveMockProfile(profile);
     return { access: MOCK_TOKEN, refresh: MOCK_REFRESH };
   }
   const { data } = await api.post<AuthResponse>("/api/auth/login", { email, password });
@@ -90,6 +93,14 @@ export const register = async (name: string, email: string, password: string) =>
   localStorage.setItem("token", data.access);
   localStorage.setItem("refresh", data.refresh);
   return data;
+};
+
+export const logout = async () => {
+  if (USE_MOCK_AUTH) {
+    return;
+  }
+  const refresh = localStorage.getItem("refresh");
+  await api.post("/api/auth/logout", { refresh });
 };
 
 export const fetchRoadmap = async () => {
@@ -137,14 +148,35 @@ export const fetchJobPack = async (jobId: number) => {
 };
 
 export const fetchProfile = async () => {
+  console.log("DEBUG: fetchProfile called, USE_MOCK_AUTH:", USE_MOCK_AUTH);
   if (USE_MOCK_AUTH) {
     const profile = loadMockProfile();
+    console.log("DEBUG: Mock profile loaded:", profile);
     if (profile) {
       return profile;
     }
   }
-  const { data } = await api.get("/api/profile");
-  return data;
+  console.log("DEBUG: Making API call to /api/profile");
+  try {
+    const { data } = await api.get("/api/profile");
+    console.log("DEBUG: API response data:", data);
+    return data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      console.log("DEBUG: 401 error, returning anonymous profile");
+      return {
+        name: "anonymous",
+        email: "",
+        track: "",
+        level: "",
+        goal: "",
+        identity_level: "",
+        cert_level: "",
+        badges: []
+      };
+    }
+    throw error;
+  }
 };
 
 export const verifyProfile = async (identity_level: "verified" | "eid_mock") => {
@@ -169,6 +201,7 @@ export const updateProfile = async (payload: {
   track?: string;
   level?: string;
   goal?: string;
+  name?: string;
 }) => {
   if (USE_MOCK_AUTH) {
     const profile = loadMockProfile() ?? buildMockProfile("Гость", "guest@example.com");

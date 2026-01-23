@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { SvgGallery } from "../components/SvgGallery";
+import { useAuth } from "../lib/auth-context";
 
 type DecorSvgProps = {
   src: string;
@@ -27,9 +28,11 @@ const DecorSvg = ({ src, className }: DecorSvgProps) => {
   );
 };
 
-import { SvgGallery } from "../components/SvgGallery";
+// import { SvgGallery } from "../components/SvgGallery";
 
 export const Landing = () => {
+  const { isAuthenticated, logout } = useAuth();
+
   // BASE_URL важен, если деплой не в корень домена
   const asset = (p: string) => `${import.meta.env.BASE_URL}${p.replace(/^\//, "")}`;
   const svg = (name: string) => asset(`svgs/${name}`);
@@ -51,7 +54,7 @@ export const Landing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-fog via-white to-accent-soft/40">
       <header className="border-b border-white/60 bg-white/70 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 xs:px-6 py-4">
           {/* Лого вместо текста */}
           <Link to="/" className="flex items-center gap-3">
             <span className="sr-only">Skill2Earn</span>
@@ -60,9 +63,20 @@ export const Landing = () => {
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link to="/onboarding" className="button-secondary">
-              Войти / Регистрация
-            </Link>
+            {isAuthenticated ? (
+              <button onClick={logout} className="button-secondary">
+                Выйти
+              </button>
+            ) : (
+              <>
+                <Link to="/login" className="button-secondary">
+                  Войти
+                </Link>
+                <Link to="/onboarding" className="button-secondary">
+                  Регистрация
+                </Link>
+              </>
+            )}
             <Link to="/app" className="button-primary">
               Демо
             </Link>
@@ -70,7 +84,7 @@ export const Landing = () => {
         </div>
       </header>
 
-      <main className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr]">
+      <main className="relative mx-auto grid max-w-6xl gap-6 xs:gap-10 px-4 xs:px-6 py-8 xs:py-16 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="pointer-events-none absolute -left-24 top-6 hidden h-56 w-56 rounded-full bg-accent/15 blur-3xl lg:block" />
         <div className="pointer-events-none absolute -right-16 bottom-12 hidden h-64 w-64 rounded-full bg-indigo-200/50 blur-3xl lg:block" />
         <section className="space-y-6">
