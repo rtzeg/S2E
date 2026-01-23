@@ -11,9 +11,8 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Force clean workspace
-        run: |
-          sudo rm -rf $GITHUB_WORKSPACE/*
+      - name: Clean workspace
+        run: rm -rf $GITHUB_WORKSPACE/*
 
       - name: Checkout code
         uses: actions/checkout@v4
