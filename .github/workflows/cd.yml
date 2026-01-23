@@ -2,7 +2,6 @@ name: Push to server
 
 on:
   workflow_dispatch:
-
   push:
     branches: [main]
 
@@ -10,9 +9,16 @@ jobs:
   production:
     name: Deploy to self-hosted
     runs-on: self-hosted
+
     steps:
+      - name: Force clean workspace
+        run: |
+          sudo rm -rf $GITHUB_WORKSPACE/*
+
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
+        with:
+          clean: true
 
       - name: Up Docker Compose
         run: docker compose down && docker compose up --build -d
